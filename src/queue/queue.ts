@@ -1,10 +1,10 @@
 import { Job, Queue, Worker } from 'bullmq'
-import { connection } from './config';
+import { redisConnection } from '../config/redis';
 import { WebhookEvent } from '../services/types';
 import { jobProcessor } from './JobProcessor';
 
 export const eventsQueue = new Queue('events', {
-  connection,
+  connection: redisConnection,
   defaultJobOptions: {
     // configured retry mechanism to handle incorrect order of events
     attempts: 10,
@@ -20,7 +20,7 @@ const myWorker = new Worker('events', async (job: Job<WebhookEvent, any, string>
   
   await jobProcessor.process(job);
 
-}, { connection, autorun: true});
+}, { connection: redisConnection, autorun: true});
 
 myWorker.on('completed', (job: Job, returnvalue: any) => {
   // console.log('Job completed:', job.id);
