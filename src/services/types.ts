@@ -3,10 +3,10 @@ export const EVENT_NAME = {
   CustomerDeleted: 'CustomerDeleted',
   OrderPlaced: 'OrderPlaced',
   OrderReturned: 'OrderReturned',
-  OrderCanceled: 'OrderCanceled',
+  OrderCanceled: 'OrderCanceled'
 } as const;
 
-export type EventName = typeof EVENT_NAME[keyof typeof EVENT_NAME];
+export type EventName = (typeof EVENT_NAME)[keyof typeof EVENT_NAME];
 
 export interface WebhookEvent {
   EventTime: string;

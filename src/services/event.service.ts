@@ -1,5 +1,5 @@
-import { eventsQueue } from "../queue/queue";
-import { EVENT_NAME, WebhookEvent } from "./types";
+import { eventsQueue } from '../queue/queue';
+import { EVENT_NAME, WebhookEvent } from './types';
 
 class EventService {
   public async handle(event: unknown): Promise<void> {
@@ -13,7 +13,7 @@ class EventService {
 
   private isValid(event: unknown): event is WebhookEvent {
     if (typeof event !== 'object' || event === null) {
-      return false
+      return false;
     }
 
     if (!('EventName' in event) || typeof event.EventName !== 'string') {

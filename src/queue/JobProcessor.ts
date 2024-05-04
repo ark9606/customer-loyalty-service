@@ -1,14 +1,13 @@
-import { Job } from "bullmq";
-import { CustomerModel } from "../models/customer";
-import { EVENT_NAME, WebhookEvent } from "../services/types";
+import { Job } from 'bullmq';
+import { CustomerModel } from '../models/customer';
+import { EVENT_NAME, WebhookEvent } from '../services/types';
 
 class JobProcessor {
-
   public async process(job: Job<WebhookEvent>) {
     // console.log('>> start handle');
 
     try {
-      switch(job.data.EventName) {
+      switch (job.data.EventName) {
         case EVENT_NAME.CustomerCreated: {
           await this.createCustomer(job.data);
           break;
@@ -24,7 +23,7 @@ class JobProcessor {
           const _check: never = '' as never;
           return _check;
       }
-    } catch(e) {
+    } catch (e) {
       // console.log('>> error', e);
       throw e;
     }
@@ -36,7 +35,7 @@ class JobProcessor {
     // console.log('>> start CustomerCreated');
     const newCustomer = new CustomerModel({
       customerId: event.Payload.CustomerId,
-      createdAt: new Date(event.EventTime),
+      createdAt: new Date(event.EventTime)
     });
     const savedCustomer = await newCustomer.save();
     // console.log('>> done create');
@@ -45,16 +44,15 @@ class JobProcessor {
   async deleteCustomer(event: WebhookEvent) {
     // console.log('>> start CustomerDeleted');
     const existingCustomer = await CustomerModel.findOne({
-      customerId: event.Payload.CustomerId,
+      customerId: event.Payload.CustomerId
     });
     if (!existingCustomer) {
       // return to queue
-      throw new Error('Customer doesn\'t exist');
+      throw new Error("Customer doesn't exist");
     }
     await existingCustomer.deleteOne();
     // console.log('>> done delete');
   }
-
 }
 
 export const jobProcessor = new JobProcessor();
