@@ -26,13 +26,12 @@ const myWorker = new Worker(
 );
 
 myWorker.on('completed', (job: Job, returnvalue: any) => {
-  // console.log('Job completed:', job.id);
-  console.log(`Handled job id ${job.id} (${job.data.EventName}) tries ${job.attemptsMade}`);
+  console.log(`Completed job ${job.data.EventName} (jobId ${job.id}) tries ${job.attemptsMade}`);
 });
 
 myWorker.on('failed', (job: Job<WebhookEvent, any, string> | undefined, error: Error) => {
   console.log(
-    `Failed job id ${job?.id} (${job?.data?.EventName}) tries ${job?.attemptsMade} error ${error.message}`
+    `Failed job ${job?.data?.EventName} (jobId ${job?.id}) tries ${job?.attemptsMade} error ${error.message}`
   );
 
   // Do something with the return value.
