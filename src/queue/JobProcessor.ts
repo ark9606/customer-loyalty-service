@@ -101,13 +101,15 @@ class JobProcessor {
 
   async deleteCustomer(event: WebhookEvent) {
     const existingCustomer = await CustomerModel.findOne({
-      customerId: event.Payload.CustomerId
+      customerId: event.Payload.CustomerId,
+      sequenceNumber: { $lt: event.Sequence },
     });
     if (!existingCustomer) {
       // return to queue
       throw new Error("Customer doesn't exist");
     }
     await existingCustomer.deleteOne();
+    await PointsModel.deleteMany({customerId: event.Payload.CustomerId});
     console.log('Customer deleted id', event.Payload.CustomerId);
   }
 }
