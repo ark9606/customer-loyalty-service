@@ -10,5 +10,6 @@ const pointsSchema = new mongoose.Schema({
 });
 
 export const POINTS_TO_DKK = 50;
+export const POINTS_EXPIRES_AFTER_DAYS = 30 * 6;
 
 export const PointsModel = mongoose.model('Points', pointsSchema);

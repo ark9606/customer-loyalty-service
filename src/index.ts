@@ -2,8 +2,9 @@ import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import WebhookRouter from './routes/webhook.router';
-import PointsRouter from './routes/webhook.router';
+import PointsRouter from './routes/points.router';
 import mongoose from 'mongoose';
+import { errorHandler } from './middlewares/error-handler';
 
 dotenv.config();
 
@@ -21,10 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/webhook', WebhookRouter);
 app.use('/', PointsRouter);
 
-app.use((err: Error, req: Request, res: Response): void => {
-  console.error(err);
-  res.status(500).send({ errors: [{ message: 'Something went wrong' }] });
-});
+app.use(errorHandler);
 
 // todo fix validation
 mongoose.connect(MONGODB_URI!);

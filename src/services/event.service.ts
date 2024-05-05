@@ -41,4 +41,4 @@ class EventService {
   }
 }
 
-export const webhookService = new EventService();
+export const eventService = new EventService();
