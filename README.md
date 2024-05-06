@@ -5,6 +5,7 @@
 - NPM (with NPX)
 - Docker
 
+### Instructions
 Configure env variables:
 ```bash
 cp .env.sample
