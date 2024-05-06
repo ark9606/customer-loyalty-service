@@ -6,7 +6,7 @@ import PointsRouter from './routes/points.router';
 import mongoose from 'mongoose';
 import { errorHandler } from './middlewares/error-handler';
 import { ConfigService } from './config/config-service';
-import Database from './common/db';
+import Database from './common/db/db';
 
 dotenv.config();
 
@@ -26,5 +26,5 @@ app.use('/', PointsRouter);
 app.use(errorHandler);
 
 if (ConfigService.NODE_ENV !== 'test') {
-  Database.getInstance()
+  Database.getInstance();
 }

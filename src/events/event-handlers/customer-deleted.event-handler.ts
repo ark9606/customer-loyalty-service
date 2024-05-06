@@ -1,13 +1,12 @@
-import BadRequestError from "../../common/errors/bad-request.error";
-import { CustomerModel } from "../../models/customer";
-import { PointsModel } from "../../models/points";
-import { CustomerDeletedEvent } from "../../services/dtos/webhook-event";
-import { EventHandler, EventInfo } from "./event-handler";
+import BadRequestError from '../../common/errors/bad-request.error';
+import { CustomerModel } from '../../models/customer';
+import { PointsModel } from '../../models/points';
+import { CustomerDeletedEvent } from '../../services/dtos/webhook-event';
+import { EventHandler, EventInfo } from './event-handler';
 
 type Payload = CustomerDeletedEvent['Payload'];
 
 class CustomerDeletedEventHandler extends EventHandler<Payload> {
-
   protected isValid(eventPayload: object): eventPayload is Payload {
     if (!('CustomerId' in eventPayload) || typeof eventPayload.CustomerId !== 'string') {
       return false;

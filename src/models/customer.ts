@@ -6,3 +6,8 @@ const customerSchema = new mongoose.Schema({
 });
 
 export const CustomerModel = mongoose.model('Customer', customerSchema);
+
+export interface CustomerDTO {
+  customerId: string;
+  createdAt: Date;
+}

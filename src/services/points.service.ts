@@ -18,7 +18,7 @@ class PointsService {
   public async consumePoints(pointsValue: number, customerId: string): Promise<number> {
     this.validateCustomerId(customerId);
     if (!pointsValue || typeof pointsValue !== 'number') {
-      throw new BadRequestError({message: 'Given invalid points value'});
+      throw new BadRequestError({ message: 'Given invalid points value' });
     }
 
     // retrieve points in order where points which expires sooner at the top
@@ -58,7 +58,7 @@ class PointsService {
 
   private validateCustomerId(input: unknown) {
     if (typeof input !== 'string' || !input.length) {
-      throw new BadRequestError({message: 'Given invalid customer id'});
+      throw new BadRequestError({ message: 'Given invalid customer id' });
     }
   }
 }

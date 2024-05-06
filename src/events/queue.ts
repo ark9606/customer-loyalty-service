@@ -22,7 +22,9 @@ export const eventsQueue = new Queue(QUEUE_NAME, {
   },
 });
 
-export const worker = new Worker(QUEUE_NAME, async (job: Job<WebhookEvent<object>, any, string>) => {
+export const worker = new Worker(
+  QUEUE_NAME,
+  async (job: Job<WebhookEvent<object>, any, string>) => {
     const handler = getEventHandler(job.data.EventName);
 
     await handler.handle(job.data);
@@ -39,7 +41,6 @@ worker.on('failed', (job: Job<WebhookEvent<object>, any, string> | undefined, er
     `Failed job ${job?.data?.EventName} (jobId ${job?.id}) tries ${job?.attemptsMade} error ${error.message}`,
   );
 });
-
 
 function getEventHandler(eventName: EventName): EventHandler<object> {
   switch (eventName) {

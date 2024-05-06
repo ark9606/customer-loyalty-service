@@ -1,12 +1,11 @@
-import BadRequestError from "../../common/errors/bad-request.error";
-import { PointsModel } from "../../models/points";
-import { OrderReturnedEvent } from "../../services/dtos/webhook-event";
-import { EventHandler, EventInfo } from "./event-handler";
+import BadRequestError from '../../common/errors/bad-request.error';
+import { PointsModel } from '../../models/points';
+import { OrderReturnedEvent } from '../../services/dtos/webhook-event';
+import { EventHandler, EventInfo } from './event-handler';
 
 type Payload = OrderReturnedEvent['Payload'];
 
 class OrderReturnedEventHandler extends EventHandler<Payload> {
-
   protected isValid(eventPayload: object): eventPayload is Payload {
     if (!('OrderId' in eventPayload) || typeof eventPayload.OrderId !== 'string') {
       return false;
