@@ -46,7 +46,7 @@ npm run test
 
 ```bash
 npm run start:prod
-case/bin/{OS}/{ARCH}/loyalty --target=http://localhost:{PORT}/webhook --concurrency=1 --delay=500ms
+case/bin/{OS}/{ARCH}/loyalty --target=http://localhost:{PORT}/webhook --concurrency=50 --delay=50ms
 ```
 
 
