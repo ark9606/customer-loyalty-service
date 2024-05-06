@@ -4,8 +4,9 @@ import { EVENT_NAME, WebhookEvent } from '../services/dtos/webhook-event';
 import { POINTS_TO_DKK, PointsModel } from '../models/points';
 import BadRequestError from '../common/errors/bad-request.error';
 
+// todo fix WebhookEvent<any>
 class JobProcessor {
-  public async process(job: Job<WebhookEvent>) {
+  public async process(job: Job<WebhookEvent<any>>) {
     try {
       switch (job.data.EventName) {
         case EVENT_NAME.CustomerCreated: {
@@ -40,7 +41,7 @@ class JobProcessor {
     // console.log(`Handled job (${job.id}, ${job.data.EventName}) tries ${job.attemptsMade}`);
   }
 
-  async placeOrder(event: WebhookEvent) {
+  async placeOrder(event: WebhookEvent<any>) {
     const existingCustomer = await CustomerModel.findOne({
       customerId: event.Payload.CustomerId,
     });
@@ -60,7 +61,7 @@ class JobProcessor {
     console.log('Order placed id', event.Payload.OrderId);
   }
 
-  async returnOrder(event: WebhookEvent) {
+  async returnOrder(event: WebhookEvent<any>) {
     const existingPoints = await PointsModel.findOne({
       orderId: event.Payload.OrderId,
       sequenceNumber: { $lt: event.Sequence },
@@ -74,7 +75,7 @@ class JobProcessor {
     console.log('Order returned id', event.Payload.OrderId);
   }
 
-  async cancelOrder(event: WebhookEvent) {
+  async cancelOrder(event: WebhookEvent<any>) {
     const existingPoints = await PointsModel.findOne({
       orderId: event.Payload.OrderId,
       sequenceNumber: { $lt: event.Sequence },
@@ -88,16 +89,16 @@ class JobProcessor {
     console.log('Order canceled id', event.Payload.OrderId);
   }
 
-  async createCustomer(event: WebhookEvent) {
-    const newCustomer = new CustomerModel({
-      customerId: event.Payload.CustomerId,
-      createdAt: new Date(event.EventTime),
-    });
-    const savedCustomer = await newCustomer.save();
-    console.log('Customer created id', savedCustomer.customerId);
+  async createCustomer(event: WebhookEvent<any>) {
+    // const newCustomer = new CustomerModel({
+    //   customerId: event.Payload.CustomerId,
+    //   createdAt: new Date(event.EventTime),
+    // });
+    // const savedCustomer = await newCustomer.save();
+    // console.log('Customer created id', savedCustomer.customerId);
   }
 
-  async deleteCustomer(event: WebhookEvent) {
+  async deleteCustomer(event: WebhookEvent<any>) {
     const existingCustomer = await CustomerModel.findOne({
       customerId: event.Payload.CustomerId,
       sequenceNumber: { $lt: event.Sequence },
