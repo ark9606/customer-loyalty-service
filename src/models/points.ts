@@ -6,7 +6,7 @@ const pointsSchema = new mongoose.Schema({
   sequenceNumber: { type: Number, required: true },
   orderPlacedAt: { type: Date, required: true },
   orderAmount: { type: Number, required: true },
-  pointsAvailable: { type: Number, required: true }
+  pointsAvailable: { type: Number, required: true },
 });
 
 export const POINTS_TO_DKK = 50;

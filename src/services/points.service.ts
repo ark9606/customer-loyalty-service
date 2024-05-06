@@ -1,14 +1,13 @@
-import BadRequestError from "../common/errors/bad-request.error";
-import { PointsModel } from "../models/points";
-import { getPointsExpireDate } from "../common/utils/getPointsExpireDate";
-
+import BadRequestError from '../common/errors/bad-request.error';
+import { PointsModel } from '../models/points';
+import { getPointsExpireDate } from '../common/utils/getPointsExpireDate';
 
 class PointsService {
   public async getPointsForCustomer(customerId: string): Promise<number> {
     const customerPoints = await PointsModel.find({
       customerId,
       pointsAvailable: { $gt: 0 },
-      orderPlacedAt: { $gte: getPointsExpireDate() }
+      orderPlacedAt: { $gte: getPointsExpireDate() },
     });
     const totalPoints = customerPoints.reduce((prev, curr) => prev + curr.pointsAvailable, 0);
     return Math.floor(totalPoints);
@@ -19,13 +18,13 @@ class PointsService {
     const customerPoints = await PointsModel.find({
       customerId,
       pointsAvailable: { $gt: 0 },
-      orderPlacedAt: { $gte: getPointsExpireDate() }
+      orderPlacedAt: { $gte: getPointsExpireDate() },
     }).sort({ orderPlacedAt: 1 });
 
     if (customerPoints.length === 0) {
-      throw new BadRequestError({message: "Customer doesn't have earned points"});
+      throw new BadRequestError({ message: "Customer doesn't have earned points" });
     }
-    
+
     let leftToSubstract = pointsValue;
     for (const item of customerPoints) {
       const diff = item.pointsAvailable - leftToSubstract;
@@ -40,14 +39,15 @@ class PointsService {
     }
 
     if (leftToSubstract > 0) {
-      throw new BadRequestError({message: "Customer doesn't have enough points to consume provided amount"});
+      throw new BadRequestError({
+        message: "Customer doesn't have enough points to consume provided amount",
+      });
     }
 
-    await Promise.all(customerPoints.map(item => item.save()));
-    
+    await Promise.all(customerPoints.map((item) => item.save()));
+
     return this.getPointsForCustomer(customerId);
   }
-
 }
 
 export const pointsService = new PointsService();

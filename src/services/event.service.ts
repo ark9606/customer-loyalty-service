@@ -7,7 +7,7 @@ import crypto from 'crypto';
 class EventService {
   public async handle(event: unknown): Promise<void> {
     if (!this.isValid(event)) {
-      throw new BadRequestError({message: 'Invalid event'});
+      throw new BadRequestError({ message: 'Invalid event' });
     }
 
     const { EventTime, ...rest } = event;

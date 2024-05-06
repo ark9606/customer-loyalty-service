@@ -10,9 +10,8 @@ export class WebhookController {
       // todo create types for the event
       await eventService.handle(req.body);
       res.status(201).json({ status: 'success' });
-    } catch(e) {
+    } catch (e) {
       next(e);
     }
-
   }
 }

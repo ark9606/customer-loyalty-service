@@ -42,11 +42,11 @@ class JobProcessor {
 
   async placeOrder(event: WebhookEvent) {
     const existingCustomer = await CustomerModel.findOne({
-      customerId: event.Payload.CustomerId
+      customerId: event.Payload.CustomerId,
     });
     if (!existingCustomer) {
       // return to queue
-      throw new BadRequestError({message: "Order can't be placed before user created"});
+      throw new BadRequestError({ message: "Order can't be placed before user created" });
     }
     const newPoints = new PointsModel({
       customerId: event.Payload.CustomerId,
@@ -54,7 +54,7 @@ class JobProcessor {
       sequenceNumber: event.Sequence,
       orderPlacedAt: new Date(event.EventTime),
       orderAmount: event.Payload.TotalOrderAmount,
-      pointsAvailable: +(event.Payload.TotalOrderAmount / POINTS_TO_DKK).toFixed(2)
+      pointsAvailable: +(event.Payload.TotalOrderAmount / POINTS_TO_DKK).toFixed(2),
     });
     await newPoints.save();
     console.log('Order placed id', event.Payload.OrderId);
@@ -67,7 +67,7 @@ class JobProcessor {
     });
     if (!existingPoints) {
       // return to queue
-      throw new BadRequestError({message: "Order can't be returned (sequence conflict)"});
+      throw new BadRequestError({ message: "Order can't be returned (sequence conflict)" });
     }
     // when record is deleted, points are cleared out
     await existingPoints.deleteOne();
@@ -81,7 +81,7 @@ class JobProcessor {
     });
     if (!existingPoints) {
       // return to queue
-      throw new BadRequestError({message: "Order can't be canceled (sequence conflict)"});
+      throw new BadRequestError({ message: "Order can't be canceled (sequence conflict)" });
     }
     existingPoints.sequenceNumber = event.Sequence;
     await existingPoints.save();
@@ -91,7 +91,7 @@ class JobProcessor {
   async createCustomer(event: WebhookEvent) {
     const newCustomer = new CustomerModel({
       customerId: event.Payload.CustomerId,
-      createdAt: new Date(event.EventTime)
+      createdAt: new Date(event.EventTime),
     });
     const savedCustomer = await newCustomer.save();
     console.log('Customer created id', savedCustomer.customerId);
@@ -104,10 +104,10 @@ class JobProcessor {
     });
     if (!existingCustomer) {
       // return to queue
-      throw new BadRequestError({message: "Customer doesn't exist"});
+      throw new BadRequestError({ message: "Customer doesn't exist" });
     }
     await existingCustomer.deleteOne();
-    await PointsModel.deleteMany({customerId: event.Payload.CustomerId});
+    await PointsModel.deleteMany({ customerId: event.Payload.CustomerId });
     console.log('Customer deleted id', event.Payload.CustomerId);
   }
 }

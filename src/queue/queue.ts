@@ -10,9 +10,9 @@ export const eventsQueue = new Queue('events', {
     attempts: 10,
     backoff: {
       type: 'exponential',
-      delay: 1000
-    }
-  }
+      delay: 1000,
+    },
+  },
 });
 
 const myWorker = new Worker(
@@ -22,7 +22,7 @@ const myWorker = new Worker(
 
     await jobProcessor.process(job);
   },
-  { connection: redisConnection, autorun: true }
+  { connection: redisConnection, autorun: true },
 );
 
 myWorker.on('completed', (job: Job, returnvalue: any) => {
@@ -31,7 +31,7 @@ myWorker.on('completed', (job: Job, returnvalue: any) => {
 
 myWorker.on('failed', (job: Job<WebhookEvent, any, string> | undefined, error: Error) => {
   console.log(
-    `Failed job ${job?.data?.EventName} (jobId ${job?.id}) tries ${job?.attemptsMade} error ${error.message}`
+    `Failed job ${job?.data?.EventName} (jobId ${job?.id}) tries ${job?.attemptsMade} error ${error.message}`,
   );
 
   // Do something with the return value.
