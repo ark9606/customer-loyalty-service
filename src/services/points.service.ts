@@ -4,6 +4,8 @@ import { getPointsExpireDate } from '../common/utils/getPointsExpireDate';
 
 class PointsService {
   public async getPointsForCustomer(customerId: string): Promise<number> {
+    this.validateCustomerId(customerId);
+
     const customerPoints = await PointsModel.find({
       customerId,
       pointsAvailable: { $gt: 0 },
@@ -14,6 +16,11 @@ class PointsService {
   }
 
   public async consumePoints(pointsValue: number, customerId: string): Promise<number> {
+    this.validateCustomerId(customerId);
+    if (!pointsValue || typeof pointsValue !== 'number') {
+      throw new BadRequestError({message: 'Given invalid points value'});
+    }
+
     // retrieve points in order where points which expires sooner at the top
     const customerPoints = await PointsModel.find({
       customerId,
@@ -47,6 +54,12 @@ class PointsService {
     await Promise.all(customerPoints.map((item) => item.save()));
 
     return this.getPointsForCustomer(customerId);
+  }
+
+  private validateCustomerId(input: unknown) {
+    if (typeof input !== 'string' || !input.length) {
+      throw new BadRequestError({message: 'Given invalid customer id'});
+    }
   }
 }
 

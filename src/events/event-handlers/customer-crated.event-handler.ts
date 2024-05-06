@@ -19,7 +19,6 @@ class CustomerCreatedEventHandler extends EventHandler<Payload> {
       createdAt: new Date(eventInfo.EventTime),
     });
     await newCustomer.save();
-    // console.log('Customer created id', savedCustomer.customerId);
   }
 }
 

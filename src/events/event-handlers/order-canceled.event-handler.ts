@@ -25,7 +25,6 @@ class OrderCanceledEventHandler extends EventHandler<Payload> {
     }
     existingPoints.sequenceNumber = eventInfo.Sequence;
     await existingPoints.save();
-    // console.log('Order canceled id', event.Payload.OrderId);
   }
 }
 

@@ -38,7 +38,6 @@ class OrderPlacedEventHandler extends EventHandler<Payload> {
       pointsAvailable: +(payload.TotalOrderAmount / POINTS_TO_DKK).toFixed(2),
     });
     await newPoints.save();
-    // console.log('Order placed id', event.Payload.OrderId);
   }
 }
 

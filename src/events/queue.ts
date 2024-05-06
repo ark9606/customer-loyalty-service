@@ -23,8 +23,6 @@ export const eventsQueue = new Queue(QUEUE_NAME, {
 });
 
 const worker = new Worker(QUEUE_NAME, async (job: Job<WebhookEvent<object>, any, string>) => {
-    // console.log('Processing job:', job.attemptsMade);
-
     const handler = getEventHandler(job.data.EventName);
 
     await handler.handle(job.data);

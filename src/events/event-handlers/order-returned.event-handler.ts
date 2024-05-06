@@ -25,7 +25,6 @@ class OrderReturnedEventHandler extends EventHandler<Payload> {
     }
     // when record is deleted, points are cleared out
     await existingPoints.deleteOne();
-    // console.log('Order returned id', event.Payload.OrderId);
   }
 }
 
