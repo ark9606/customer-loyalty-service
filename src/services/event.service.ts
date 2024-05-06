@@ -1,7 +1,7 @@
 import BadRequestError from '../common/errors/bad-request.error';
 import { redisConnection } from '../config/redis';
 import { eventsQueue } from '../queue/queue';
-import { EVENT_NAME, WebhookEvent } from './types';
+import { ENTITY_NAME, EVENT_NAME, EntityName, EventName, WebhookEvent } from './dtos/webhook-event';
 import crypto from 'crypto';
 
 class EventService {
@@ -10,13 +10,12 @@ class EventService {
       throw new BadRequestError({ message: 'Invalid event' });
     }
 
+    // exclude EventTime before check for duplicates
     const { EventTime, ...rest } = event;
+
     const hash = crypto.createHash('sha256').update(JSON.stringify(rest)).digest('hex');
     const redisKey = `event_hash:${hash}`;
-    const exists = await redisConnection.exists(redisKey);
-    // console.log('>>exists', exists);
-    if (exists) {
-      // console.log('hash dup', hash);
+    if (await redisConnection.exists(redisKey)) {
       return;
     }
 
@@ -24,7 +23,7 @@ class EventService {
     await redisConnection.set(redisKey, 1, 'EX', 60 * 5);
   }
 
-  private isValid(event: unknown): event is WebhookEvent {
+  private isValid(event: unknown): event is WebhookEvent<unknown> {
     if (typeof event !== 'object' || event === null) {
       return false;
     }
@@ -32,12 +31,42 @@ class EventService {
     if (!('EventName' in event) || typeof event.EventName !== 'string') {
       return false;
     }
-    // todo fix check below
-    if (!(event.EventName in EVENT_NAME)) {
+    if (!this.isEventName(event.EventName)) {
+      return false;
+    }
+
+    if (
+      !('EventTime' in event) ||
+      typeof event.EventTime !== 'string' ||
+      !Number.isSafeInteger(new Date(event.EventTime)?.getTime())
+    ) {
+      return false;
+    }
+
+    if (!('EntityName' in event) || typeof event.EntityName !== 'string') {
+      return false;
+    }
+    if (!this.isEntityName(event.EntityName)) {
+      return false;
+    }
+
+    if (!('Sequence' in event) || typeof event.Sequence !== 'number') {
+      return false;
+    }
+
+    if (!('Payload' in event) || typeof event.Payload !== 'object' || event.Payload === null) {
       return false;
     }
 
     return true;
+  }
+
+  private isEventName(input: string): input is EventName {
+    return Object.values(EVENT_NAME).includes(input as EventName);
+  }
+
+  private isEntityName(input: string): input is EntityName {
+    return Object.values(ENTITY_NAME).includes(input as EntityName);
   }
 }
 

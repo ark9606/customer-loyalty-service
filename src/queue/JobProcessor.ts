@@ -1,6 +1,6 @@
 import { Job } from 'bullmq';
 import { CustomerModel } from '../models/customer';
-import { EVENT_NAME, WebhookEvent } from '../services/types';
+import { EVENT_NAME, WebhookEvent } from '../services/dtos/webhook-event';
 import { POINTS_TO_DKK, PointsModel } from '../models/points';
 import BadRequestError from '../common/errors/bad-request.error';
 

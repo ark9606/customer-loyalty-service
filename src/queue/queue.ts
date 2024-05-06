@@ -1,6 +1,6 @@
 import { Job, Queue, Worker } from 'bullmq';
 import { redisConnection } from '../config/redis';
-import { WebhookEvent } from '../services/types';
+import { WebhookEvent } from '../services/dtos/webhook-event';
 import { jobProcessor } from './JobProcessor';
 
 export const eventsQueue = new Queue('events', {
@@ -15,9 +15,9 @@ export const eventsQueue = new Queue('events', {
   },
 });
 
-const myWorker = new Worker(
+const worker = new Worker(
   'events',
-  async (job: Job<WebhookEvent, any, string>) => {
+  async (job: Job<WebhookEvent<unknown>, any, string>) => {
     // console.log('Processing job:', job.attemptsMade);
 
     await jobProcessor.process(job);
@@ -25,15 +25,12 @@ const myWorker = new Worker(
   { connection: redisConnection, autorun: true },
 );
 
-myWorker.on('completed', (job: Job, returnvalue: any) => {
+worker.on('completed', (job: Job, returnvalue: any) => {
   console.log(`Completed job ${job.data.EventName} (jobId ${job.id}) tries ${job.attemptsMade}`);
 });
 
-myWorker.on('failed', (job: Job<WebhookEvent, any, string> | undefined, error: Error) => {
+worker.on('failed', (job: Job<WebhookEvent<unknown>, any, string> | undefined, error: Error) => {
   console.log(
     `Failed job ${job?.data?.EventName} (jobId ${job?.id}) tries ${job?.attemptsMade} error ${error.message}`,
   );
-
-  // Do something with the return value.
-  // console.log('failed', error);
 });
