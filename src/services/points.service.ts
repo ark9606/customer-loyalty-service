@@ -1,5 +1,6 @@
+import BadRequestError from "../common/errors/bad-request.error";
 import { PointsModel } from "../models/points";
-import { getPointsExpireDate } from "../utils/getPointsExpireDate";
+import { getPointsExpireDate } from "../common/utils/getPointsExpireDate";
 
 
 class PointsService {
@@ -22,7 +23,7 @@ class PointsService {
     }).sort({ orderPlacedAt: 1 });
 
     if (customerPoints.length === 0) {
-      throw new Error("Customer doesn't have earned points");
+      throw new BadRequestError({message: "Customer doesn't have earned points"});
     }
     
     let leftToSubstract = pointsValue;
@@ -39,7 +40,7 @@ class PointsService {
     }
 
     if (leftToSubstract > 0) {
-      throw new Error("Customer doesn't have enough points to consume provided amount");
+      throw new BadRequestError({message: "Customer doesn't have enough points to consume provided amount"});
     }
 
     await Promise.all(customerPoints.map(item => item.save()));

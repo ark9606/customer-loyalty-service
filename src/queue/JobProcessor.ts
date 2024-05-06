@@ -2,6 +2,7 @@ import { Job } from 'bullmq';
 import { CustomerModel } from '../models/customer';
 import { EVENT_NAME, WebhookEvent } from '../services/types';
 import { POINTS_TO_DKK, PointsModel } from '../models/points';
+import BadRequestError from '../common/errors/bad-request.error';
 
 class JobProcessor {
   public async process(job: Job<WebhookEvent>) {
@@ -28,11 +29,8 @@ class JobProcessor {
           break;
         }
         default:
-          // throw new Error('No processors for job');
-          // console.log('default', event.EventName);
-          // todo make correct check for never
+          // exhaustive check for EventName
           const _check: never = job.data.EventName;
-          // return _check;
       }
     } catch (e) {
       // console.log('>> error', e);
@@ -48,7 +46,7 @@ class JobProcessor {
     });
     if (!existingCustomer) {
       // return to queue
-      throw new Error("Order can't be placed before user created");
+      throw new BadRequestError({message: "Order can't be placed before user created"});
     }
     const newPoints = new PointsModel({
       customerId: event.Payload.CustomerId,
@@ -69,7 +67,7 @@ class JobProcessor {
     });
     if (!existingPoints) {
       // return to queue
-      throw new Error("Order can't be returned (sequence conflict)");
+      throw new BadRequestError({message: "Order can't be returned (sequence conflict)"});
     }
     // when record is deleted, points are cleared out
     await existingPoints.deleteOne();
@@ -83,7 +81,7 @@ class JobProcessor {
     });
     if (!existingPoints) {
       // return to queue
-      throw new Error("Order can't be canceled (sequence conflict)");
+      throw new BadRequestError({message: "Order can't be canceled (sequence conflict)"});
     }
     existingPoints.sequenceNumber = event.Sequence;
     await existingPoints.save();
@@ -106,7 +104,7 @@ class JobProcessor {
     });
     if (!existingCustomer) {
       // return to queue
-      throw new Error("Customer doesn't exist");
+      throw new BadRequestError({message: "Customer doesn't exist"});
     }
     await existingCustomer.deleteOne();
     await PointsModel.deleteMany({customerId: event.Payload.CustomerId});

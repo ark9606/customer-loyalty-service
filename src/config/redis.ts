@@ -1,9 +1,9 @@
-import { Config } from './config';
+import { ConfigService } from './config';
 import IORedis from 'ioredis';
 
 export const redisConnection = new IORedis({
-  host: Config.redisConfig.host,
-  port: Config.redisConfig.port,
+  host: ConfigService.redisConfig.host,
+  port: ConfigService.redisConfig.port,
   maxRetriesPerRequest: null
 });
 

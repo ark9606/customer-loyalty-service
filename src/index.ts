@@ -5,12 +5,12 @@ import WebhookRouter from './routes/webhook.router';
 import PointsRouter from './routes/points.router';
 import mongoose from 'mongoose';
 import { errorHandler } from './middlewares/error-handler';
+import { ConfigService } from './config/config';
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI;
+const port = ConfigService.port;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,8 +24,7 @@ app.use('/', PointsRouter);
 
 app.use(errorHandler);
 
-// todo fix validation
-mongoose.connect(MONGODB_URI!);
+mongoose.connect(ConfigService.mongoURI);
 
 app.listen(port, () => {
   console.log(`Customer loyalty service is running at http://localhost:${port}`);

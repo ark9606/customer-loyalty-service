@@ -2,22 +2,35 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export class Config {
+export class ConfigService {
   public static get mongoURI(): string {
-    return process.env.MONGO_URI || 'mongodb://localhost:27017/yourdb';
+    const uri = process.env.MONGODB_URI;
+    if (!uri || !uri.length) {
+      throw new Error(`Invalid env variable MONGODB_URI`);
+    }
+    return uri;
   }
 
   public static get redisConfig(): { host: string; port: number } {
+    const host = process.env.REDIS_HOST;
+    if (!host || !host.length) {
+      throw new Error(`Invalid env variable REDIS_HOST`);
+    }
+    const port = parseInt(process.env.REDIS_PORT || '6379');
+    if (!Number.isSafeInteger(port)) {
+      throw new Error(`Invalid env variable REDIS_PORT`);
+    }
     return {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379')
+      host,
+      port,
     };
   }
 
-  public static get redisPort(): number {
-    return parseInt(process.env.REDIS_PORT || '6379');
-  }
   public static get port(): number {
-    return parseInt(process.env.PORT || '3000');
+    const port = parseInt(process.env.PORT || '3000');
+    if (!Number.isSafeInteger(port)) {
+      throw new Error(`Invalid env variable PORT`);
+    }
+    return port;
   }
 }
