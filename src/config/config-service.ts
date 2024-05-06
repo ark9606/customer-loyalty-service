@@ -34,6 +34,14 @@ export class ConfigService {
     return port;
   }
 
+  public static get NODE_ENV(): string {
+    const env = process.env.NODE_ENV;
+    if (!env || !['development', 'test'].includes(env)) {
+      return ConfigService.throwError('NODE_ENV');
+    }
+    return env;
+  }
+
   private static throwError(envVariable: string): never {
     throw new Error(`Invalid env variable "${envVariable}"`);
   }

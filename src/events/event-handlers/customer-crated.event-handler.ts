@@ -4,7 +4,7 @@ import { EventHandler, EventInfo } from "./event-handler";
 
 type Payload = CustomerCreatedEvent['Payload'];
 
-class CustomerCreatedEventHandler extends EventHandler<Payload> {
+export class CustomerCreatedEventHandler extends EventHandler<Payload> {
 
   protected isValid(eventPayload: object): eventPayload is Payload {
     if (!('CustomerId' in eventPayload) || typeof eventPayload.CustomerId !== 'string') {
