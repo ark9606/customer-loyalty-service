@@ -1,5 +1,5 @@
-import { CustomerModel } from "../models/customer";
-import { CustomerCreatedEvent } from "../services/dtos/webhook-event";
+import { CustomerModel } from "../../models/customer";
+import { CustomerCreatedEvent } from "../../services/dtos/webhook-event";
 import { EventHandler, EventInfo } from "./event-handler";
 
 type Payload = CustomerCreatedEvent['Payload'];
@@ -18,7 +18,7 @@ class CustomerCreatedEventHandler extends EventHandler<Payload> {
       customerId: payload.CustomerId,
       createdAt: new Date(eventInfo.EventTime),
     });
-    const savedCustomer = await newCustomer.save();
+    await newCustomer.save();
     // console.log('Customer created id', savedCustomer.customerId);
   }
 }

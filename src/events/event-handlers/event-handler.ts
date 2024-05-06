@@ -1,5 +1,5 @@
-import BadRequestError from "../common/errors/bad-request.error";
-import { WebhookEvent } from "../services/dtos/webhook-event";
+import BadRequestError from "../../common/errors/bad-request.error";
+import { WebhookEvent } from "../../services/dtos/webhook-event";
 
 export type EventInfo = Omit<WebhookEvent<object>, 'Payload'>;
 

@@ -1,10 +1,10 @@
 import BadRequestError from '../common/errors/bad-request.error';
 import { redisConnection } from '../config/redis';
-import { eventsQueue } from '../queue/queue';
+import { eventsQueue } from '../events/queue';
 import { ENTITY_NAME, EVENT_NAME, EntityName, EventName, WebhookEvent } from './dtos/webhook-event';
 import crypto from 'crypto';
 
-class EventService {
+class WebhookService {
   public async handle(event: unknown): Promise<void> {
     if (!this.isValid(event)) {
       throw new BadRequestError({ message: 'Invalid event' });
@@ -70,4 +70,4 @@ class EventService {
   }
 }
 
-export const eventService = new EventService();
+export const webhookService = new WebhookService();
