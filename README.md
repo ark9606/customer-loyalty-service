@@ -33,6 +33,7 @@ Postman collection with request examples available at [docs/postman_collection.j
 - Add auth for API, currently, there is no auth to have the ability to use the loyalty bin for testing.
 - Add API documentation with OpenAPI (Swagger).
 - Create more tests, currently, there is low coverage.
+- Use dead-letter queue for handling wrong order of events.
 
 
 ## Tests
